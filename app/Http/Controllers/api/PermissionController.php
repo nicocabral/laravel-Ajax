@@ -12,4 +12,14 @@ class PermissionController extends Controller
     	$permission = Permission::whereRole_id($id)->get();
     	return $permission;
     }
+
+    public function showPermissions(){
+    	$permission = Permission::all();
+    	return $permission;
+    }
+
+    public function showRolesPermissions($id){
+    	$permission = Permission::whereRole_id($id)->get();
+    	return $permission;
+    }
 }

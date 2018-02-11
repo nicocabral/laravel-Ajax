@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('content')
+@include('dashboard.accountsetup.statuschecker')
 	<div class="card">
 	  <div class="card-body">
 	  	<div class="row">
@@ -57,15 +58,16 @@
 				   <div class="row">
 				   	<div class="col-md-4">
 				   		<form id="updateCredentialsForm" data-toggle="validator">
-				   			{{csrf_field()}}
+				   			{{csrf_field()}} 
 				   		<div class="form-group">
+
 				   		<label><strong>New Password</strong></label>
-				   		<input type="password" class="form-control" name="newpassword" id="newpassword"  required autofocus="">
+				   		<input type="password" class="form-control" name="newpassword" id="newpassword"  required autofocus="" readonly="">
 				   		<span class="help-block with-errors" style="color:red"></span>
 				 		</div>
 				   		<div class="form-group">
 				   		<label><strong>Confirm Password</strong></label>
-				   		<input type="password" class="form-control" name="confirmpassword" id="confirmpassword" required>
+				   		<input type="password" class="form-control" name="confirmpassword" id="confirmpassword" required readonly="">
 				   		<span class="help-block with-errors" style="color:red"></span>
 				   		</div>
 				   	
@@ -82,7 +84,7 @@
 				  	<div class="row">
 				  		<div class="col-md-4">
 				  		<form id="securityQuestionForm" data-toggle="validator">
-				  			{{csrf_field()}}
+				  			{{csrf_field()}}{{ method_field('POST') }}
 				    	<div id="securityQuestionContent"></div>
 				    	</form>
 				    	</div>

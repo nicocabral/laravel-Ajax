@@ -1,6 +1,6 @@
 @extends('layouts.login')
-
 @section('content')
+@include('auth.forgotpassword')
 <div class="row">
 	<div class="col-md-6 col-xs-6">
 		<img src="{{asset('assets/images/bg.png')}}" class="img-reponsive" width="100%">
@@ -29,7 +29,7 @@
 					     <span class="help-block with-errors" style="color:red"></span>
 					  </div>
 					   <div class="form-group">
-					    <a href="#"><i class="far fa-question-circle"></i> Forgot password</a>
+					    <a href="javascript:void(0)" id="btnForgotPassword"><i class="far fa-question-circle"></i> Forgot password</a>
 					  </div>
 					  <div class="form-group">
 					  	<div class="col-md-4 col-xs-4"></div>

@@ -43,6 +43,9 @@ $('#btnCancelPassword').click(function(){
 	$('#btnEditPassword').show();
 	$('#newpassword').attr('readonly','readonly');
 	$('#confirmpassword').attr('readonly','readonly');
+	$('#confirmpassword').val('');
+	$('#newpassword').val('');
+	$('#newpassword').focus();
 })
 
 $('#myprofileForm').validator().on('submit', function(){
@@ -154,6 +157,7 @@ function securityQuestion(){
 
 
 				$('#securityQuestionContent').html(output);
+				$('input[name=_method]').val("POST");
 			}
 			else{
 				var output ="";
@@ -163,9 +167,9 @@ function securityQuestion(){
 				 output+='<div class="form-group">'
 				 output+='<label><strong>Answer</strong></label>'
 				 output+='<input type="text" class="form-control" required name="answer" id="answer" value="'+data.answer+'" readonly><span class="help-block with-errors" style="color:red"></span></div>'
-				 output+='<div class="form-group">'
+				 output+='<div class="form-group"><input type="hidden" id="userid" value="'+data.userid+'">'
 				 output+='<button class="btn btn-success" type="button" onclick="editSecurityQuestion()" id="btnEditSecurityQuestion"><i class="far fa-edit"></i> Edit</button> '
-				 output+='<button class="btn btn-success" type="button" id="btnUpdateSecurityQuestion"><i class="fas fa-pencil-alt"></i> Update</button> '
+				 output+='<button class="btn btn-success" type="submit" id="btnUpdateSecurityQuestion"><i class="fas fa-pencil-alt"></i> Update</button> '
 				 output+='<button class="btn btn-secondary" type="button" id="btnCancelSecurityQuestion" onclick="cancel()"> Cancel</button>'
 				 output+='</div>'
 
@@ -173,6 +177,7 @@ function securityQuestion(){
 				$('#securityQuestionContent').html(output);
 				$('#btnUpdateSecurityQuestion').hide();
 				$('#btnCancelSecurityQuestion').hide();
+				$('input[name=_method]').val("PATCH");
 			}
 			
 		}
@@ -181,8 +186,16 @@ function securityQuestion(){
 
 $('#securityQuestionForm').validator().on('submit', function(){
 	event.preventDefault();
+	var id = $('#userid').val();
+	var url = "";
+	var method = $('input[name=_method]').val();
+	if(method == "POST")
+		url = "api/store_security_question"
+	else
+		url = "api/update_security_question/"+id;
+
 	$.ajax({
-		url:'api/store_security_question',
+		url:url,
 		type:'post',
 		data: new FormData($('#securityQuestionForm')[0]),
 		cache:false,
@@ -198,6 +211,24 @@ $('#securityQuestionForm').validator().on('submit', function(){
 					title:'Success',
 					text:data.message,
 					type:'success'
+				})
+				securityQuestion()
+			}else if(data.success == false){
+				var m = "";
+				$.each(data.errors, function(){
+					m+=val;
+				})
+				swal({
+					title:'Warning',
+					text:m,
+					type:'info'
+				})
+			}
+			else{
+				swal({
+					title:'Warning',
+					text:data.message,
+					type:'info'
 				})
 			}
 		}

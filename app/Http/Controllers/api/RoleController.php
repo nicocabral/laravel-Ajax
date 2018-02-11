@@ -85,4 +85,10 @@ class RoleController extends Controller
     		return response()->json(['fail' => true,'message'=>$e->getMessage()]);
     	}
     }
+
+
+    public function showRoles(){
+        $role = Role::all();
+        return $role;
+    }
 }

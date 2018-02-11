@@ -15,6 +15,7 @@
     <!-- end of navbar -->
 
     <div class="container">
+    
     @yield('content')
      
 

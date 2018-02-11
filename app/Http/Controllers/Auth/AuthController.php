@@ -19,6 +19,7 @@ class AuthController extends Controller
     		$password = $request['password'];
     		$credentials = ['email' => $username, 'password' => $password];
     		$login = Auth::attempt($credentials);
+            
     		if(count($login)){
     		try{
     			

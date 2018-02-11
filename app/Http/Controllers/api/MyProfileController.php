@@ -35,8 +35,8 @@ class MyProfileController extends Controller
 
     public function updatePassword(Request $request){
     	$id = Auth::user()->id;
-    	$message = ['newpassword.required' => 'Name is required',
-    				'confirmpassword.required' =>'Birthdate is required',
+    	$message = ['newpassword.required' => 'new password is required',
+    				'confirmpassword.required' =>'Confirm password is required',
     				];
     	$validator = Validator::make($request->all(),['newpassword'=>'required|same:confirmpassword|min:8',
     												  'confirmpassword' =>'required|same:newpassword|min:8',
@@ -45,6 +45,6 @@ class MyProfileController extends Controller
     		 return response()->json(['success'=>false,'errors' => $validator->getMessageBag()->toArray()]);
     	}
     	$updatepassword = User::whereId($id)->update(['password'=>bcrypt($request['confirmpassword'])]);
-    	return $updatepassword ? response()->json(['success'=>true, 'message'=>'Password updated']) : response()->json(['fail'=>false, 'message'=>'An error occured while updating your password']);
+    	return $updatepassword ? response()->json(['success'=>true, 'message'=>'Password updated']) : response()->json(['fail'=>true, 'message'=>'An error occured while updating your password']);
     }
 }

@@ -8,10 +8,10 @@
           <ul class="navbar-nav">
             @if(Auth::user()->role == 1 && Auth::user()->permission == 1 || Auth::user()->role == 2 &&Auth::user()->permission == 1 )
             <li class="nav-item">
-              <a class="nav-link" href="#"><i class="far fa-user"></i> Customers</a>
+              <a class="nav-link" href="{{ url('/customers')}}"><i class="far fa-user"></i> Customers</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="http://blog.bootswatch.com/"><i class="far fa-bookmark"></i> Contracts</a>
+              <a class="nav-link" href="{{ url('/contracts')}}"><i class="far fa-bookmark"></i> Contracts</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="download"><i class="fas fa-chart-bar"></i> Reports <span class="caret"></span></a>
@@ -29,9 +29,10 @@
                 <a class="dropdown-item" href="#">Settings</a>
                 <a class="dropdown-item" href="{{ url('/merchants')}}">Merchants</a>
                 <a class="dropdown-item" href="{{ url('/roles')}}">Roles</a>
-                @else
+                @endif
+                @if(Auth::user()->role==2 && Auth::user()->permission == 1)
                 <a class="dropdown-item" href="#">Settings</a>
-                <a class="dropdown-item" href="#">Users</a>
+                <a class="dropdown-item" href="{{ url('/users')}}">Users</a>
                 @endif
             
               </div>

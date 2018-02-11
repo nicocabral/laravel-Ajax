@@ -15,6 +15,7 @@ use Validator;
 use DB;
 use Carbon\Carbon;
 use App\Http\Helpers\EmailHelper;
+use App\Http\Controllers\api\UserController;
 class MerchantController extends Controller
 {
     //
@@ -53,6 +54,9 @@ class MerchantController extends Controller
     		if($merchant){
     			$sendMail = new EmailHelper;
     			$sendMail->sendCredentials($request['email'],$request['password']);
+                $mid = $merchant->id;
+                $user = new UserController;
+                $user->store($request->all(),$mid);
     			return response()->json(['success'=>true,'message'=>"Merchant Created, credentials sent to merchant's email"]);
     		}
     	
@@ -93,7 +97,9 @@ class MerchantController extends Controller
 
     public function destroy($id){
     	try{
-    		$merchant = Merchant::whereId($id)->update(['deleted_at'=>Carbon::now('Asia/Manila')]);
+    		$merchant = Merchant::whereId($id)->update(['deleted_at'=>Carbon::now('Asia/Manila'),'status'=>0]);
+            $user = new UserController;
+            $user->destroy($id);
     		return $merchant ? response()->json(['success'=>true,'message'=>'Deleted successfully']) : " ";
     	}catch(\Exception $e){
     		return response()->json(['fail'=>true, 'message'=>$e->getMessage()]);
@@ -119,6 +125,8 @@ class MerchantController extends Controller
 	    	$password = $request['password'];
 	    	$sendEmail = new EmailHelper;
 	    	$sendEmail->sendCredentials($email,$password);
+            $user = new UserController;
+            $user->updatePassword($request);
 	    	return response()->json(['success'=>true,'message'=>"Password updated. Password sent to merchant's email"]);
     	}
     	

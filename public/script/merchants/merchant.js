@@ -189,7 +189,6 @@ function editData(id){
 		},
 		success:function(data){
 			$('.loader').fadeOut();
-			console.log(data);
 			$('#name').focus();
 			$('#name').val(data.name);
 			$('#dob').val(data.dob);

@@ -23,4 +23,15 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('/roles', 'api\RoleController@index');
 	Route::get('/merchants', 'api\MerchantController@index');
 	Route::get('/myprofile', 'api\MyProfileController@index');
+	Route::get('/customers', 'api\CustomerController@index');
+	Route::get('/contracts', 'api\ContractController@index');
+	Route::get('/users','api\MerchantUserController@index');
+
+
 });
+
+
+//forgot password
+Route::post('/forgotpassword/checkemail', 'Auth\ForgotPasswordController@verifyEmail');
+//reset password
+Route::post('/forgot_password/verify_answer','Auth\ForgotPasswordController@resetPassword');
