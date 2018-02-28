@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use Carbon\Carbon;
 use Validator;
+use App\Http\Helpers\LogsHelper;
 class MyProfileController extends Controller
 {
     //
@@ -30,6 +31,8 @@ class MyProfileController extends Controller
     	$myprofile = User::whereId($id)->update(['name'=>$request['name'],
     											'dob' => $request['dob'],
     											'email' => $request['email']]);
+        $log = new LogsHelper();
+        $log->store('Update','Updated '.$request['name']);
     	return $myprofile ? response()->json(['success'=>true, 'message'=>'Profile updated']) : response()->json(['success'=>false, 'message'=>'An error occured while updating your profile']);
     }
 
@@ -44,7 +47,9 @@ class MyProfileController extends Controller
     	if($validator->fails()){
     		 return response()->json(['success'=>false,'errors' => $validator->getMessageBag()->toArray()]);
     	}
-    	$updatepassword = User::whereId($id)->update(['password'=>bcrypt($request['confirmpassword'])]);
+    	$updatepassword = User::whereId($id)->update(['password'=>bcrypt($request['confirmpassword']),'status'=>1]);
+        $log = new LogsHelper();
+        $log->store('Update password','Update '.Auth::user()->name);
     	return $updatepassword ? response()->json(['success'=>true, 'message'=>'Password updated']) : response()->json(['fail'=>true, 'message'=>'An error occured while updating your password']);
     }
 }

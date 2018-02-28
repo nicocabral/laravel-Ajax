@@ -21,12 +21,21 @@
 		  		<form id="loginForm" data-toggle="validator">
 		  			{{ csrf_field() }}
 		  			  <div class="form-group">
+		  			  	 <div class="inner-addon left-addon" style="color:#2B4278;">
+                          <i class="far fa-user"></i>
 					    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
 					     <span class="help-block with-errors" style="color:red"></span>
+					 </div>
 					  </div>
 					  <div class="form-group">
+					  	 <div class="inner-addon left-addon" style="color:#2B4278;">
+                                   <i class="fas fa-lock"></i>
 					    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
 					     <span class="help-block with-errors" style="color:red"></span>
+					 </div>
+					  </div>
+					  <div class="form-group">
+					  	<div id="attempRecord"></div>
 					  </div>
 					   <div class="form-group">
 					    <a href="javascript:void(0)" id="btnForgotPassword"><i class="far fa-question-circle"></i> Forgot password</a>

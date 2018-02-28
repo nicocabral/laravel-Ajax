@@ -16,6 +16,7 @@ use Validator;
 use DB;
 use Carbon\Carbon;
 use App\Http\Helpers\PermissionHelper;
+use App\Http\Helpers\LogsHelper;
 class RoleController extends Controller
 {
     //
@@ -41,6 +42,8 @@ class RoleController extends Controller
     	$role->save();
     	$permission = new PermissionHelper();
     	$permission->store($request->all());
+        $log = new LogsHelper();
+        $log->store('store','Role Created by '.Auth::user()->name);
     	return $role && $permission ? response()->json(['success'=>true,'message' => 'Role Created']) : "";
     }catch(\Exception $e){
     	return response()->json(['fail'=>true,'message'=>$e->getMessage()]);
@@ -55,6 +58,8 @@ class RoleController extends Controller
     public function destroy($id){
     	try{
     		$role = Role::whereId($id)->update(['deleted_at'=> Carbon::now('Asia/Manila')]);
+            $log = new LogsHelper();
+            $log->store('Delete','Delete '.$id);
     		return $role ? response()->json(['success'=>true,'message'=>'Deleted successfully']) : "";
     	}catch(\Exception $e){
     		return response()->json(['fail'=>true,'message'=>$e->getMessage()]);
@@ -80,6 +85,8 @@ class RoleController extends Controller
 	    		 return response()->json(['success'=>false,'errors' => $validator->getMessageBag()->toArray()]);
 	    	}
 	    	$role = Role::whereId($id)->update(['roleid' => $request['roletype'],'name'=>$request['rolename']]);
+            $log = new LogsHelper();
+            $log->store('Update','Update Role by'.Auth::user()->name);
 	    	return $role ? response()->json(['success'=>true,'message'=>'Role Updated']): ""; 
     	}catch(\Exception $e){
     		return response()->json(['fail' => true,'message'=>$e->getMessage()]);

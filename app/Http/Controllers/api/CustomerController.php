@@ -11,15 +11,18 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Response;
 use App\Customer;
-use App\CustomerContact;
-use App\CustomerCompany;
 use App\Merchant;
+use App\CustomerCompany;
+use App\CustomerContact;
 use Validator;
 use DB;
 use Carbon\Carbon;
 use App\Http\Helpers\EmailHelper;
-
-
+use App\Http\Hepers\ExportToExcel;
+use App\Http\Helpers\CustomerHelper;
+use App\Http\Helpers\CustomerContactHelper;
+use App\Http\Helpers\CustomerCompanyHelper;
+use App\Http\Helpers\LogsHelper;
 class CustomerController extends Controller
 {
     //
@@ -42,32 +45,30 @@ class CustomerController extends Controller
     		if($validator->fails()){
     			 return response()->json(['success'=>false,'errors' => $validator->getMessageBag()->toArray()]);
     		}
-    		$customer = new Customer;
-    		$customer->customerid = $request['customerid'];
-    		$customer->customercode = $request['customerid'];
-    		$customer->fname = $request['fname'];
-    		$customer->lname = $request['lname'];
-    		$customer->email = $request['email'];
-    		$customer->merchant = $request['merchant'];
-    		$customer->status = $request['status'];
-    		$customer->save();
-    		if($customer){
-    			$customer_contact = new CustomerContact;
-    			$customer_contact->customerid = $customer->customerid;
-    			$customer_contact->d_phone = $request['dphone'];
-    			$customer_contact->e_phone = $request['ephone'];
-    			$customer_contact->m_phone = $request['mphone'];
-    			$customer_contact->fax = $request['fax'];
-    			$customer_contact->save();
-    			$customer_company = new CustomerCompany;
-    			$customer_company->customerid = $customer->customerid;
-    			$customer_company->name = $request['company'];
-    			$customer_company->title = $request['title'];
-    			$customer_company->department = $request['dep'];
-    			$customer_company->save();
-
-    			return response()->json(['success'=>true,'message'=>'Customer created']);
-    		}
+            $crawl = new CustomerHelper();
+            $res = $crawl->store($request);
+            if($res['Successful']){
+                $customer = new Customer;
+                $customer->customerid = $request['customerid'];
+                $customer->customercode = $res['CustomerCode'];
+                $customer->fname = $request['fname'];
+                $customer->lname = $request['lname'];
+                $customer->email = $request['email'];
+                $customer->merchantid = Auth::user()->merchantid;
+                $customer->merchant = $request['merchant'];
+                $customer->status = $request['status'];
+                $customer->save();
+                if($customer){
+                    $customer_contact = new CustomerContactHelper();
+                    $customer_contact->store($request,$customer->customerid);
+                    $customer_company = new CustomerCompanyHelper();
+                    $customer_company->store($request,$customer->customerid);
+                    $log = new LogsHelper();
+                    $log->store('store','Created'.$request['fname'].' '.$request['lname']);
+                    return response()->json(['success'=>true,'message'=>'Customer created']);
+                } 
+            }
+    		
     		return response()->json(['fail'=>true,'message'=>'An error occured. Unable to create customer.']);
     	}catch(\Exception $e){
     		return response()->json(['fail'=>true,'message'=>$e->getMessage()]);
@@ -96,34 +97,48 @@ class CustomerController extends Controller
     		if($validator->fails()){
     			 return response()->json(['success'=>false,'errors' => $validator->getMessageBag()->toArray()]);
     		}
-    		$customer = Customer::whereId($id)->update(['fname' => $request['fname'],
-    													'lname'=>$request['lname'],
-    													'email'=>$request['email'],
-    													'merchant' => $request['merchant'],
-    													'status' => $request['status']]);
-    		if($customer){
-    			$query = Customer::find($id);
-    			$customerid = $query->customerid;
-    			$customer_contact = CustomerContact::whereCustomerid($customerid)
-    							  ->update(['d_phone' => $request['dphone'],
-    										'e_phone' => $request['ephone'],
-    										'm_phone' => $request['mphone'],
-    										'fax' => $request['fax']]);
-    			$customer_company = CustomerCompany::whereCustomerid($customerid)
-    								 ->update(['name' => $request['company'],
-    								 		   'title' => $request['title'],
-    								 		   'department' => $request['dep']]);
-    				return response()->json(['success'=>true,'message'=>'Customer updated']);				 
-    		}
-    		return response()->json(['fail'=>true,'message'=>'An error occured. Unable to create customer.']);
+            $query = Customer::find($id);
+            $customerid = $query->customerid; 
+            $customercode = $query->customercode;
+            $crawl = new CustomerHelper();
+            $res = $crawl->update($request,$customercode);
+
+            if($res['Successful']){
+                $customer = Customer::whereId($id)->update(['fname' => $request['fname'],
+                                                        'lname'=>$request['lname'],
+                                                        'email'=>$request['email'],
+                                                        'status' => $request['status']]);
+                if($customer){
+                     
+                    $customer_contact = new CustomerContactHelper();
+                    $contact = $customer_contact->update($request,$customerid);
+                    $customer_company = new CustomerCompanyHelper();
+                    $company = $customer_company->update($request,$customerid);
+                    $log = new LogsHelper();
+                    $log->store('update','Update'.$request['fname'].' '.$request['lname']);
+                    return $contact == '1' && $company == '1' ? response()->json(['success'=>true,'message'=>'Customer Updated']) : response()->json(['fail'=>true,'message'=>'An error occured. Unable to create customer.']);  
+                }
+            }
+    		
+    		return response()->json(['fail'=>true,'message'=>'An error occured. Unable to update customer.']);
     	}catch(\Exception $e){
     		return response()->json(['fail'=>true,'message'=>$e->getMessage()]);
     	}
     }
     public function destroy($id){
     	try{
-    		$customer = Customer::whereId($id)->update(['deleted_at'=>Carbon::now('Asia/Manila')]);
-    		return response()->json(['success'=>true,'message'=>'Customer Deleted']);
+            $customer = Customer::find($id);
+            $customercode = $customer->customercode;
+            $crawl = new CustomerHelper();
+            $res = $crawl->delete($customercode);
+            if($res['Successful']){
+               $customer = Customer::whereId($id)->update(['deleted_at'=>Carbon::now('Asia/Manila'),'status' => 2]);
+               $log = new LogsHelper();
+                    $log->store('Deleted','Delete'.$customercode);
+               return response()->json(['success'=>true,'message'=>'Customer Deleted']); 
+            }
+    		
+    		
     	}catch(\Exception $e){
     		return response()->json(['fail'=>true,'message'=>$e->getMessage()]);
     	}
@@ -131,11 +146,9 @@ class CustomerController extends Controller
     public function apiCustomer(){
     	try{
     		if(Auth::user()->status == 1){ //admin sounds payment
-				$customer = DB::table('customers')
-				->select('customers.*','customer_contacts.d_phone','customer_contacts.e_phone','customer_contacts.m_phone','customer_contacts.fax','customer_companies.name','customer_companies.title','customer_companies.department')
-				->join('customer_contacts','customer_contacts.customerid','=','customers.customerid') 
-				->join('customer_companies','customer_companies.customerid', '=', 'customers.customerid')
-				->where('customers.deleted_at','=', Null)->get(); 
+		
+                $customer = Customer::whereDeleted_at(Null)
+                ->select('id','customerid','fname','lname','email','status','customercode')->get();
 				return DataTables::of($customer)->make(true);  	
     		}else{
     			$id = Auth::id();
@@ -157,5 +170,14 @@ class CustomerController extends Controller
     	$merchant = Merchant::whereDeleted_at(Null)->get();
     	return $merchant;
     }
+
+    public function showInfo($id){
+        $customer = Customer::whereCustomerid($id)
+        ->select('id','customercode','customerid','fname','lname','email','status')->first();
+        $contact = CustomerContact::whereCustomerid($id)->first();
+        $company = CustomerCompany::whereCustomerid($id)->first();
+        return response()->json(['customer'=>$customer,'contact'=>$contact,'company'=>$company]);
+    }
+    
     
 }

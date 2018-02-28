@@ -29,11 +29,7 @@
        				<input type="text" class="form-control" required name="lname" id="lname">
        				<span class="help-block with-errors" style="color:red"></span>
        			</div>
-       			<div class="form-group">
-       				<label><strong>Email</strong></label>
-       				<input type="text" class="form-control" required name="email" id="email">
-       				<span class="help-block with-errors" style="color:red"></span>
-       			</div>
+       			
        			<div class="form-group">
        				<label><strong>Company</strong></label>
        				<input type="text" class="form-control" required name="company" id="company">
@@ -49,6 +45,11 @@
        			</div>
        		</div>
        		<div class="col-md-6">
+            <div class="form-group">
+              <label><strong>Email</strong></label>
+              <input type="text" class="form-control" required name="email" id="email">
+              <span class="help-block with-errors" style="color:red"></span>
+            </div>
        			<div class="form-group">
        				<label><strong>Daytime Phone</strong></label>
        				<input type="text" class="form-control" name="dphone" id="dphone">
@@ -72,7 +73,7 @@
        					<option value="2">Inactive</option>
        				</select>
        			</div>
-       			<div class="form-group" >
+       			<div class="form-group" id="merchant">
        				<label><strong>Merchant</strong></label>
        				<div id="merchantlist">
        			</div>

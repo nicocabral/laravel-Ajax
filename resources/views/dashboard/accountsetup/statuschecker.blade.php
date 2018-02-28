@@ -3,3 +3,4 @@
 		window.location.href="/";
 	</script>
 @endif
+

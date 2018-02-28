@@ -12,29 +12,18 @@ var table = $('#users_table').DataTable({
                         {data: 'name', name: 'name'},
                         {data: 'email', name: 'email'},
                         {data: 'contact', name: 'contact'},
+                        {data: 'location_name', name: 'location_name'},
                         {data: 'role', name: 'role',
                         "render":function(data,type,row,name){
                         	if(data==3){
-                        		return '<p>User</p>';
+                        		return '<p>Admin</p>';
                         	}
                         	else {
-                        		return '<p>Admin</p>';
+                        		return '<p>User</p>';
                         	}
                         }
                     },
-	                    {data: 'permission', name: 'permission',
-	                        "render":function(data,type,row,name){
-	                        	if(data==1){
-	                        		return '<p>Admin</p>';
-	                        	}
-	                        	else if(data==2){
-	                        		return '<p>Read Only</p>';
-	                        	}
-	                        	else {
-	                        		return '<p>Report Only</p>';
-	                        	}
-	                        }
-	                    },
+	                   
 	                    {data: 'status', name: 'status',
 	                        "render":function(data,type,row,name){
 	                        	if(data==1){
@@ -50,8 +39,8 @@ var table = $('#users_table').DataTable({
 	                    },
                         {data: 'id', name: 'id', orderable: false, searchable: false,
                        	"render": function(data,type,row,name){
-                       		return '<button class="btn btn-primary btn-sm" onclick="editData('+data+')"><i class="far fa-edit"></i> Edit</button>'+
-                       			   ' <button class="btn btn-danger btn-sm" onclick="deleteData('+data+')"><i class="fas fa-trash"></i> Delete</button>'
+                       		return '<button class="btn btn-primary btn-sm" onclick="editData('+data+')"><i class="far fa-edit"></i></button>'+
+                       			   ' <button class="btn btn-danger btn-sm" onclick="deleteData('+data+')"><i class="fas fa-trash"></i></button>'
                        	}
                     }
                       ]
@@ -68,12 +57,11 @@ $('#btnAddUser').click(function(){
 	$('#create_modal').modal('show');
 	$('.modal-title').text('Create user');
 	$('#createUserForm')[0].reset();
-	loadRoles()
-	loadPermission()
 	$('#btnGeneratePword').hide();
 	$('input[name=_method]').val('POST');
 	$('#status').removeAttr('readonly','readonly');
-
+	loadRoles()
+	loadPermission()
 })
 $('#btnGenerate').click(function(){
 	generate()

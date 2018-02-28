@@ -2,23 +2,19 @@ var token = localStorage.getItem('token');
 $.ajaxSetup({
 	headers:{'Authorization' : 'Bearer '+token }
 });
+ 
 var table = $('#customers_table').DataTable({
                       processing: true,
                       serverSide: true,
                       ajax:  'api/customers' ,
+                      fixedHeader:true,
                       columns: [
                         {data: 'customerid', name: 'customerid',
                         "render":function(data,type,row,name){
-                        	if(data == 2){
-                        		return '<a href="javascript:void(0)" onclick="viewPermission('+data+')"><strong>Admin</strong></a>';
-                        	}
-                        	else{
-                        		return '<a href="javascript:void(0)" onclick="viewPermission('+data+')"><strong>User</strong></a>';
-                        	}
+                        	return '<a href="javascript:void(0)" onclick="viewCustomer('+"'"+data+"'"+')"><strong>'+data+'</strong></a>';
                         }
                     },
                     {data: 'customercode', name: 'customercode'},
-                    {data: 'merchant', name: 'merchant'},
                     {data: 'fname', name: 'fname'},
                     {data: 'lname', name: 'lname'},
                     {data: 'email', name: 'email'},
@@ -38,14 +34,20 @@ var table = $('#customers_table').DataTable({
                        			   ' <button class="btn btn-danger btn-sm" onclick="deleteData('+data+')"><i class="fas fa-trash"></i></button>'
                        	}
                     }
-                      ]
+                      ],
+
                     });
 
+
 $('#btnRefreshTable').click(function(){
+	NProgress.start();
 	table.ajax.reload();
+	NProgress.done();
+
 })
 
 $('#btnAddRole').click(function(){
+	NProgress.start();
 	$('#create_modal').modal('show');
 	$('.modal-title').text('Create customer');
 	$('input[name=_method]').val('POST');
@@ -54,6 +56,8 @@ $('#btnAddRole').click(function(){
 	$('#customerid').focus();
 	$('#customerid').attr('required', 'required');
 	loadMerchant()
+	$('#merchant').hide();
+	NProgress.done();
 })
 function loadMerchant(){
 	$.ajax({
@@ -96,10 +100,12 @@ $('#customerForm').validator().on('submit', function(){
 		contentType:false,
 		processData:false,
 		beforeSend:function(){
+			NProgress.start();
 			$('.loader').show()
 		},
 		success:function(data){
 			$('.loader').fadeOut();
+			NProgress.done();
 			console.log(data)
 		
 			if(data.success == true){
@@ -110,6 +116,8 @@ $('#customerForm').validator().on('submit', function(){
 				})
 				 $('#customerForm')[0].reset();
 				 	table.ajax.reload();
+				method == "PATCH" ? $('#create_modal').modal('hide') : "";
+
 			}
 			else if(data.success == false){
 				var m = "";
@@ -166,7 +174,7 @@ function deleteData(id){
 
 //edit customer
 function editData(id){
-
+$('#merchant').hide();
 	$.ajax({
 		url:'api/customer/'+id+'/edit',
 		type:'get',
@@ -200,4 +208,62 @@ function editData(id){
 
 		}
 	})
+}
+
+function exportCustomer(){
+	NProgress.start();
+  event.preventDefault();
+
+  window.location.href="customer/export";
+  NProgress.done();
+}
+
+function viewCustomer(id){
+	$('#txtCustomerId').val(id);
+	$('#view_customer_modal').modal('show');
+	customerinfo();
+}
+function customerinfo(){
+	var id = $('#txtCustomerId').val();
+	$.ajax({
+		url:'api/customerinfo/'+id,
+		type:'get',
+		cache:false,
+		beforeSend:function(){
+			$('#customerInfoContent').html('<center><i class="fas fa-spin fa-spinner fa-2x"></center>');
+		},
+		success:function(data){
+			var id = $('#txtCid').val(data.customer.id);
+			var stat = ""
+			if(data.customer.status == 1)
+				stat = "Active";
+			else
+				stat = "Inactive";
+			var output = "";
+			output+='<table class="table table-striped table-condensed">'
+			output+='<tr><td style="text-align:right;">Customer ID :</td><td><strong>'+data.customer.customerid+'</strong></td><td style="text-align:right;">Email :</td><td><strong>'+data.customer.email+'</strong></td></tr>'
+			output+='<tr><td style="text-align:right;">Status :</td><td><strong>'+stat+'</strong></td><td style="text-align:right;">Daytime Phone :</td><td><strong>'+data.contact.d_phone+'</strong></td></tr>'
+			output+='<tr><td style="text-align:right;">Name :</td><td><strong>'+data.customer.fname+' '+data.customer.lname+'</strong></td><td style="text-align:right;">Mobile Phone :</td><td><strong>'+data.contact.m_phone+'</strong></td></tr>'
+			output+='<tr><td style="text-align:right;">Company :</td><td><strong>'+data.company.name+'</strong></td><td style="text-align:right;">Evening Phone :</td><td><strong>'+data.contact.e_phone+'</strong></td></tr>'
+			output+='</table>'
+
+			$('#customerInfoContent').html(output);
+		}
+	})
+}
+function editCustomer(){
+	$('.loader').show();
+	$('#view_customer_modal').modal('hide');
+	var id = $('#txtCid').val();
+	var c = 1;
+	setInterval(function(){
+		if(c==0){
+			editData(id);
+		}c--;
+	},500);
+	
+}
+
+function customerContract(){
+
 }

@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('content')
+
 @include('dashboard.accountsetup.statuschecker')
 	<div class="card">
 	  <div class="card-body">

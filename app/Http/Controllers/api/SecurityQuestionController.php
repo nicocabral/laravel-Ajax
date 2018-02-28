@@ -45,7 +45,6 @@ class SecurityQuestionController extends Controller
         $checkstat = Auth::user()->status;
         if($checkstat == 2){
             $updatestat = User::whereId(Auth::user()->id)->update(['status'=>1]);
-            $updatemstat = Merchant::whereId(Auth::user()->merchantid)->update(['status'=>1]);
             return response()->json(['success'=>true,'message'=>'Security Question created']);
         }
     	return $data ? response()->json(['success'=>true,'message'=>'Security Question created']) : response()->json(['fail'=>true,'message'=>'An error occured while saving your security question']);

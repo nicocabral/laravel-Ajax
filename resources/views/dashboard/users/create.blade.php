@@ -23,17 +23,20 @@
        					<input type="email" class="form-control" name="email" id="email" required>
        					<span class="help-block with-errors" style="color:red"></span>
        				</div>
-       				<div class="form-group">
-       					<label><strong>Birthdate</strong></label>
-       					<input type="text" class="form-control datepicker" name="dob" id="dob" required>
-       					<span class="help-block with-errors" style="color:red"></span>
-       				</div>
-       				<div class="form-group">
-       					<label><strong>Contact</strong></label>
-       					<input type="text" class="form-control" name="contact" id="contact" >
-       				</div>
+               <div class="form-group">
+                <label><strong>Birthdate</strong></label>
+                <input type="text" class="form-control datepicker" name="dob" id="dob" required>
+                <span class="help-block with-errors" style="color:red"></span>
+              </div>
+       				
        			</div>
        			<div class="col-md-6">
+             
+              <div class="form-group">
+                <label><strong>Contact</strong></label>
+                <input type="text" class="form-control" name="contact" id="contact" >
+              </div>
+              @if(Auth::user()->role == 3 && Auth::user()->permission ==1)
        				<div class="form-group">
        					<label><strong>Role</strong></label>
        					<div id="roleList"></div>
@@ -43,7 +46,7 @@
        					<label><strong>Permission</strong></label>
 						<div id="permissionList"></div>
        				</div>
-       				<div class="form-group">
+       				<!-- <div class="form-group">
        					<label><strong>Status</strong></label>
        					<select class="form-control" name="status" id="status">
        						<option value="1">Active</option>
@@ -51,12 +54,13 @@
        						<option value="3">Lockout</option>
        					</select>
        					<span class="help-block with-errors" style="color:red"></span>
-       				</div>
-       				<div class="form-group" id="password_fields">
+       				</div> -->
+       				<!-- <div class="form-group" id="password_fields">
        					<label><strong>Password</strong></label>
        					<input type="text" class="form-control" name="password" id="password" readonly="">
        					<button class="btn btn-primary" style="margin-top: 5px;" id="btnGenerate">Generate</button>
-       				</div>
+       				</div> -->
+              @endif
        			</div>
        		</div>
       </div>

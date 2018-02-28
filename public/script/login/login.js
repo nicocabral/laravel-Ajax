@@ -24,6 +24,7 @@ $('#loginForm').validator().on('submit', function(){
 					text:data.message,
 					type:'info'
 				});
+				$('#attempRecord').html('<em style="color:red;">Bad Attempt: '+data.attemp+'</em>')
 			}
 			else if(data.fail == true){
 				swal({

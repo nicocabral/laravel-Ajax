@@ -77,6 +77,8 @@ function proceed(){
 									$('#securityQuestionContent').html(output);
 
 									$('#btnSave').show();
+								}else{
+									window.location.reload();
 								}
 							}
 						})

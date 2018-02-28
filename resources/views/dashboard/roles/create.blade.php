@@ -16,8 +16,8 @@
 	      		<div class="form-group">
 	        		<label><strong>Role Type</strong></label>
 	        		<select class="form-control" name="roletype" id="roletype" required style="color:#000000;">
-	        			<option value="2">Admin</option>
-	        			<option value="3">User</option>
+	        			<option value="3">Admin</option>
+	        			<option value="4">User</option>
 	        		</select>
 	        		<span class="help-block with-errors" style="color:red"></span>
 	        	</div>

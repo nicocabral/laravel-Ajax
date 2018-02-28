@@ -33,17 +33,22 @@
     {{-- dataTables --}}
     <script src="{{ asset('assets/dataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/dataTables/bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/dataTables/bs4/js/dataTables.fixedHeader.min.js') }}"></script>
          <!-- Sweet Alert js -->
     <script src="{{asset('assets/plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
     <script src="{{asset('assets/pages/jquery.sweet-alert.init.js')}}"></script> 
         {{-- Validator --}}
     <script src="{{ asset('assets/validator/validator.min.js') }}"></script>
     <script src="{{ asset('js/datepicker.js') }}"></script>
+    <script src="{{ asset('js/nprogress.js') }}"></script>
     <script type="text/javascript">
+      NProgress.start();
       $(window).load(function(){
         $('.loader').fadeOut();
+        NProgress.done();
       })
     </script>
     @yield('script')
+    @yield('unauthorized')
   </body>
 </html>

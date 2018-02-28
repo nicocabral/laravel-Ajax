@@ -9,9 +9,12 @@
     <link href="{{asset('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/css/pages.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/css/responsive.css')}}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{asset('icons/css/fontawesome-all.min.css')}}">
+    <link href="{{asset('assets/icons/css/fontawesome-all.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('css/loader.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('css/nprogress.css')}}" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+
 </head>
  <div class="loader">
         <span class="loader-spinner">
@@ -33,9 +36,12 @@
         <script src="{{asset('assets/pages/jquery.sweet-alert.init.js')}}"></script> 
                {{-- Validator --}}
         <script src="{{ asset('assets/validator/validator.min.js') }}"></script>
+        <script src="{{ asset('js/nprogress.js') }}"></script>
  <script type="text/javascript">
+    NProgress.start();
  	$(window).load(function(){
  		$('.loader').fadeOut();
+        NProgress.done();
  	})
  </script>
  @yield('script')

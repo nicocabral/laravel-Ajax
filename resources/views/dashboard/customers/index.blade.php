@@ -1,7 +1,20 @@
 @extends('layouts.master')
+@if(Auth::user()->role == 4)
+  @section('unauthorized')
+  <div class="container">
+    <div class="alert alert-dismissible alert-danger">
+     
+      <strong>Unauthorized access </strong>
+    </div>
+  </div>
+  @endsection
+@else
 @section('content')
 @include('dashboard.accountsetup.statuschecker')
 @include('dashboard.customers.create')
+@include('dashboard.customers.view_customer')
+@include('dashboard.contracts.create')
+
 	<div class="card">
 	  <div class="card-body">
 	  	<div class="row">
@@ -12,7 +25,7 @@
 	  			<center>
 	  			<button class="btn btn-success" id="btnAddRole">Add customer</button>
 	  			<button class="btn btn-success pull-right" id="btnRefreshTable">Refresh table</button>
-	  			<button class="btn btn-success pull-right" id="btnExport">Export</button>
+	  			<button class="btn btn-success pull-right" id="btnExport" onclick="exportCustomer()">Export</button>
 	  		</center>
 	  		   
 	  		</div>
@@ -27,7 +40,6 @@
 	  					<tr>
 	  						<th>Customer ID</th>
 	  						<th>Customer Code</th>
-	  						<th>Merchant</th>
 	  						<th>First name</th>
 	  						<th>Last name</th>
 	  						<th>Email</th>
@@ -35,6 +47,7 @@
 	  						<th>Action</th>
 	  					</tr>
 	  				</thead>
+	  			
 	  				<tbody></tbody>
 	  			</table>
 	  		</div>
@@ -48,3 +61,4 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="{{'script/customers/customer.js'}}" ></script>
 @endsection
+@endif

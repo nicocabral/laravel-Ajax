@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware'=> ['api','cors']], function(){
+
+Route::group(['middleware'=> ['api','cors','revalidate']], function(){
 
 		//login api
 		Route::post('/auth/login','Auth\AuthController@postLogin');
@@ -64,10 +65,20 @@ Route::group(['middleware'=> ['api','cors']], function(){
               Route::resource('/user','api\MerchantUserController');
               Route::post('/user/resetpassword', 'api\MerchantUserController@resetPassword');
 
+              //customer info
+              Route::get('/customerinfo/{id}','api\CustomerController@showInfo');
+
+              //settings
+
+              Route::post('/setting', 'api\SettingController@store');
+              Route::get('/setting/loadSelectedCodes','api\SettingController@show');
+
+
     
 
 
               
     });
+
 });
 

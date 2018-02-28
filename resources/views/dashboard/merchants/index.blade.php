@@ -1,5 +1,16 @@
 @extends('layouts.master')
+@if(Auth::user()->role == 4)
+  @section('unauthorized')
+  <div class="container">
+    <div class="alert alert-dismissible alert-danger">
+     
+      <strong>Unauthorized access </strong>
+    </div>
+  </div>
+  @endsection
+@else
 @section('content')
+@include('dashboard.accountsetup.statuschecker')
 @include('dashboard.merchants.create')
 	<div class="card">
 	  <div class="card-body">
@@ -43,3 +54,4 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="{{'script/merchants/merchant.js'}}" ></script>
 @endsection
+@endif

@@ -1,5 +1,16 @@
 @extends('layouts.master')
+@if(Auth::user()->role == 4)
+	@section('unauthorized')
+	<div class="container">
+		<div class="alert alert-dismissible alert-danger">
+		 
+		  <strong>Unauthorized access </strong>
+		</div>
+	</div>
+	@endsection
+@else
 @section('content')
+@include('dashboard.accountsetup.statuschecker')
 @include('dashboard.accountsetup.statuschecker')
 @include('dashboard.users.create')
 	<div class="card">
@@ -27,8 +38,8 @@
 	  						<th>Name</th>
 	  						<th>Email</th>
 	  						<th>Contact</th>
+	  						<th>Location</th>
 	  						<th>Role</th>
-	  						<th>Permission</th>
 	  						<th>Status</th>
 	  						<th>Action</th>
 	  					</tr>
@@ -47,3 +58,5 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="{{'script/users/user.js'}}" ></script>
 @endsection
+
+@endif	
